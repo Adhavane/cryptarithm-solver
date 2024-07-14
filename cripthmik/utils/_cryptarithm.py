@@ -1,6 +1,7 @@
 import re
+from typing import Set
 
-OPERATORS = ['+', '-', '*', '/', '%', '=']
+OPERATORS = ["+", "-", "*", "/", "%", "="]
 
 
 class Cryptarithm:
@@ -16,25 +17,46 @@ class Cryptarithm:
     def format_puzzle(puzzle: str, case_sensitive: bool):
         if not case_sensitive:  # Convert to uppercase if not case sensitive
             puzzle = puzzle.upper()
-        puzzle = puzzle.replace(' ', '')  # Remove spaces
+        puzzle = puzzle.replace(" ", "")  # Remove spaces
         return puzzle
 
     @staticmethod
     def validate_puzzle(puzzle: str):
         # Check if puzzle is a string
         if not isinstance(puzzle, str):
-            raise ValueError('Puzzle must be a string.')
+            raise ValueError("Puzzle must be a string.")
 
-        # Check if puzzle is in the form 'WORD [OPERATOR] WORD ([OPERATOR] WORD)* = WORD ([OPERATOR] WORD)*'
-        pattern = r'^[a-zA-Z]+(?:[+*/%-][a-zA-Z]+)*=[a-zA-Z]+(?:[+*/%-][a-zA-Z]+)*$'
+        # Check if puzzle is not empty
+        if puzzle.count("=") != 1:
+            raise ValueError("Puzzle must contain exactly one equals sign.")
+
+        # Check if puzzle contains only valid characters
+        pattern = r"^[a-zA-Z]+(?:[+*/%-][a-zA-Z]+)*=[a-zA-Z]+(?:[+*/%-][a-zA-Z]+)*$"
         if not re.match(pattern, puzzle):
-            raise ValueError('Invalid puzzle format.')
+            raise ValueError("Invalid puzzle format.")
 
-    def get_puzzle(self):
+    @property
+    def puzzle(self) -> str:
         return self._puzzle
 
+    @property
+    def words(self) -> Set[str]:
+        return set(re.findall(r"[a-zA-Z]+", self._puzzle))
 
-if __name__ == '__main__':
-    puzzle = 'SEnD +MORE = MONEY'
+    @property
+    def letters(self) -> Set[str]:
+        return set("".join(self.words))
+
+    @property
+    def operators(self) -> Set[str]:
+        pattern = "[" + "".join([f"\\{op}" for op in OPERATORS]) + "]"
+        return set(re.findall(pattern, self._puzzle))
+
+
+if __name__ == "__main__":
+    puzzle = "MORE - m + m / m % p * p  =   MONEY"
     cryptarithm = Cryptarithm(puzzle)
-    print(cryptarithm.get_puzzle())
+    print(cryptarithm.puzzle)
+    print(cryptarithm.words)
+    print(cryptarithm.letters)
+    print(cryptarithm.operators)
