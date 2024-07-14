@@ -13,6 +13,7 @@ class Cryptarithm:
         puzzle (str): The formatted puzzle.
         words (Set[str]): Set of words in the puzzle.
         letters (Set[str]): Set of unique letters in the puzzle.
+        leading_letters (Set[str]): Set of leading letters in the puzzle.
         operators (Set[str]): Set of operators in the puzzle.
 
     Methods:
@@ -49,27 +50,25 @@ class Cryptarithm:
 
         self._puzzle: str = puzzle
 
-    @classmethod
-    def _format_puzzle(cls, puzzle: str, case_sensitive: bool = False) -> str:
+    def _format_puzzle(self, puzzle: str, case_sensitive: bool = False) -> str:
         if not case_sensitive:  # Convert to uppercase if not case sensitive
             puzzle = puzzle.upper()
         puzzle = puzzle.replace(" ", "")  # Remove spaces
         return puzzle
 
-    @classmethod
-    def _validate_puzzle(cls, puzzle: str) -> None:
+    def _validate_puzzle(self, puzzle: str) -> None:
         # Check if puzzle is a string
         if not isinstance(puzzle, str):
             raise ValueError("Puzzle must be a string.")
 
         # Check if puzzle is not empty
-        if puzzle.count(cls._operators["equals"]) != 1:
+        if puzzle.count(self._operators["equals"]) != 1:
             raise ValueError("Puzzle must contain exactly one equals sign.")
 
         # Check if puzzle contains only valid characters
         pattern = (
             r"^[a-zA-Z]+(?:["
-            + "".join([f"\\{op}" for op in cls._operators.values()])
+            + "".join([f"\\{op}" for op in self._operators.values()])
             + r"][a-zA-Z]+)+$"
         )
         if not re.match(pattern, puzzle):
@@ -86,6 +85,10 @@ class Cryptarithm:
     @property
     def letters(self) -> Set[str]:
         return set("".join(self.words))
+
+    @property
+    def leading_letters(self) -> Set[str]:
+        return set([word[0] for word in self.words])
 
     @property
     def operators(self) -> Set[str]:
