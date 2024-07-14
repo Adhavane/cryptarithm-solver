@@ -1,8 +1,6 @@
 import re
 from typing import Set
 
-OPERATORS = ["+", "-", "*", "/", "%", "="]
-
 
 class Cryptarithm:
     """Cryptarithm class for solving cryptarithm puzzles.
@@ -12,10 +10,14 @@ class Cryptarithm:
         case_sensitive (bool): Whether the puzzle is case sensitive. Default is False.
 
     Attributes:
-        puzzle (str): The cryptarithm puzzle.
+        puzzle (str): The formatted puzzle.
         words (Set[str]): Set of words in the puzzle.
         letters (Set[str]): Set of unique letters in the puzzle.
         operators (Set[str]): Set of operators in the puzzle.
+
+    Methods:
+        _format_puzzle: Format the puzzle.
+        _validate_puzzle: Validate the puzzle.
 
     Raises:
         ValueError: If the puzzle is not a string, does not contain exactly one equals sign, or is in an invalid format.
@@ -32,33 +34,42 @@ class Cryptarithm:
         {'+', '='}
     """
 
+    _operators = {
+        "addition": "+",
+        "subtraction": "-",
+        "multiplication": "*",
+        "division": "/",
+        "modulus": "%",
+        "equals": "=",
+    }
+
     def __init__(self, puzzle: str, case_sensitive: bool = False):
-        puzzle = Cryptarithm.format_puzzle(puzzle, case_sensitive)
-        Cryptarithm.validate_puzzle(puzzle)
+        puzzle = self._format_puzzle(puzzle, case_sensitive)
+        self._validate_puzzle(puzzle)
 
         self._puzzle: str = puzzle
 
-    @staticmethod
-    def format_puzzle(puzzle: str, case_sensitive: bool = False) -> str:
+    @classmethod
+    def _format_puzzle(cls, puzzle: str, case_sensitive: bool = False) -> str:
         if not case_sensitive:  # Convert to uppercase if not case sensitive
             puzzle = puzzle.upper()
         puzzle = puzzle.replace(" ", "")  # Remove spaces
         return puzzle
 
-    @staticmethod
-    def validate_puzzle(puzzle: str) -> None:
+    @classmethod
+    def _validate_puzzle(cls, puzzle: str) -> None:
         # Check if puzzle is a string
         if not isinstance(puzzle, str):
             raise ValueError("Puzzle must be a string.")
 
         # Check if puzzle is not empty
-        if puzzle.count("=") != 1:
+        if puzzle.count(cls._operators["equals"]) != 1:
             raise ValueError("Puzzle must contain exactly one equals sign.")
 
         # Check if puzzle contains only valid characters
         pattern = (
             r"^[a-zA-Z]+(?:["
-            + "".join([f"\\{op}" for op in OPERATORS])
+            + "".join([f"\\{op}" for op in cls._operators.values()])
             + r"][a-zA-Z]+)+$"
         )
         if not re.match(pattern, puzzle):
@@ -78,5 +89,6 @@ class Cryptarithm:
 
     @property
     def operators(self) -> Set[str]:
-        pattern = "[" + "".join([f"\\{op}" for op in OPERATORS]) + "]"
+        pattern = "[" + \
+            "".join([f"\\{op}" for op in self._operators.values()]) + "]"
         return set(re.findall(pattern, self._puzzle))
