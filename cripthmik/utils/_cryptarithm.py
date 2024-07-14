@@ -14,7 +14,7 @@ class Cryptarithm:
         self._puzzle: str = puzzle
 
     @staticmethod
-    def format_puzzle(puzzle: str, case_sensitive: bool):
+    def format_puzzle(puzzle: str, case_sensitive: bool = False) -> str:
         if not case_sensitive:  # Convert to uppercase if not case sensitive
             puzzle = puzzle.upper()
         puzzle = puzzle.replace(" ", "")  # Remove spaces
@@ -31,7 +31,9 @@ class Cryptarithm:
             raise ValueError("Puzzle must contain exactly one equals sign.")
 
         # Check if puzzle contains only valid characters
-        pattern = r"^[a-zA-Z]+(?:[+*/%-][a-zA-Z]+)*=[a-zA-Z]+(?:[+*/%-][a-zA-Z]+)*$"
+        pattern = r"^[a-zA-Z]+(?:[" + \
+            "".join([f'\\{op}' for op in OPERATORS]) + \
+            r"][a-zA-Z]+)+$"
         if not re.match(pattern, puzzle):
             raise ValueError("Invalid puzzle format.")
 
