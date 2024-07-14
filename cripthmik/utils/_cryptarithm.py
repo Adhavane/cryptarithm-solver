@@ -1,5 +1,5 @@
 import re
-from typing import Set
+from typing import List, Set
 
 
 class Cryptarithm:
@@ -11,10 +11,10 @@ class Cryptarithm:
 
     Attributes:
         puzzle (str): The formatted puzzle.
-        words (Set[str]): Set of words in the puzzle.
+        words (List[str]): List of words in the puzzle.
         letters (Set[str]): Set of unique letters in the puzzle.
         leading_letters (Set[str]): Set of leading letters in the puzzle.
-        operators (Set[str]): Set of operators in the puzzle.
+        operators (List[str]): List of operators in the puzzle.
 
     Methods:
         _format_puzzle: Format the puzzle.
@@ -79,8 +79,8 @@ class Cryptarithm:
         return self._puzzle
 
     @property
-    def words(self) -> Set[str]:
-        return set(re.findall(r"[a-zA-Z]+", self._puzzle))
+    def words(self) -> List[str]:
+        return re.findall(r"[a-zA-Z]+", self._puzzle)
 
     @property
     def letters(self) -> Set[str]:
@@ -91,7 +91,7 @@ class Cryptarithm:
         return set([word[0] for word in self.words])
 
     @property
-    def operators(self) -> Set[str]:
+    def operators(self) -> List[str]:
         pattern = "[" + \
             "".join([f"\\{op}" for op in self._operators.values()]) + "]"
-        return set(re.findall(pattern, self._puzzle))
+        return re.findall(pattern, self._puzzle)

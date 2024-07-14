@@ -13,6 +13,6 @@ Example:
 
 
 from ._solver import Solver
-from ._prolog import PrologSolver
+from ._prolog import GenerateAndTest
 
-__all__ = ["Solver", "PrologSolver"]
+__all__ = ["Solver", "GenerateAndTest"]
