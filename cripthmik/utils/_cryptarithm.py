@@ -21,7 +21,7 @@ class Cryptarithm:
         return puzzle
 
     @staticmethod
-    def validate_puzzle(puzzle: str):
+    def validate_puzzle(puzzle: str) -> None:
         # Check if puzzle is a string
         if not isinstance(puzzle, str):
             raise ValueError("Puzzle must be a string.")
@@ -53,12 +53,3 @@ class Cryptarithm:
     def operators(self) -> Set[str]:
         pattern = "[" + "".join([f"\\{op}" for op in OPERATORS]) + "]"
         return set(re.findall(pattern, self._puzzle))
-
-
-if __name__ == "__main__":
-    puzzle = "MORE - m + m / m % p * p  =   MONEY"
-    cryptarithm = Cryptarithm(puzzle)
-    print(cryptarithm.puzzle)
-    print(cryptarithm.words)
-    print(cryptarithm.letters)
-    print(cryptarithm.operators)
