@@ -6,6 +6,7 @@ from ..utils import Cryptarithm
 from ._solver import Solution, Solver
 
 import tempfile
+from pathlib import Path
 
 Rule: TypeAlias = str
 
@@ -46,7 +47,7 @@ class GenerateAndTest(Solver):
         return {f"digit({letter})" for letter in cryptarithm.letters}
 
     def _all_diff(self, cryptarithm: Cryptarithm) -> Rule:
-        return f"all_diff([{', '.join(cryptarithm.letters)}])"
+        return f"all_diff([{','.join(cryptarithm.letters)}])"
 
     def _diff(self, letter: str, value: int) -> Rule:
         return f"dif({letter}, {value})"
@@ -95,10 +96,12 @@ class GenerateAndTest(Solver):
         operators = cryptarithm.operators
         operands = cryptarithm.words
         query = ""
+        
+        return f"solve([{','.join(cryptarithm.letters)}])"
 
         for i in range(len(operands) - 1):
-            query += f"[{', '.join(operands[i])}], {operators[i]}, "
-        query += f"[{', '.join(operands[-1])}]"
+            query += f"[{','.join(operands[i])}], {operators[i]}, "
+        query += f"[{','.join(operands[-1])}]"
 
         return f"solve([{query}])"
 
@@ -107,24 +110,26 @@ class GenerateAndTest(Solver):
         allow_zero: bool = True, allow_leading_zero: bool = False
     ) -> Generator[Solution, None, None]:
         # open temporary file to write rules
-        with tempfile.NamedTemporaryFile(mode="w", delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", delete=False) as fp:
             for rule in self._rules:
-                f.write(rule + ".\n")
-            f.write("\n")
+                fp.write(rule + ".\n")
+            fp.write("\n")
 
             query = self._query(cryptarithm)
-            f.write(f"{query} :- ")
-            f.write(", ".join(map(str, self._generate(
+            fp.write(f"{query} :- ")
+            fp.write(", ".join(map(str, self._generate(
                 cryptarithm, allow_zero, allow_leading_zero))))
-            f.write(f", {self._test(cryptarithm)}" + ".\n")
+            fp.write(f", {self._test(cryptarithm)}" + ".\n")
             
-            
-
             # print the path of the temporary file
-            print(f.name)
+            print(fp.name)
+            print(query)
             
-            input("Press Enter to continue...")
-            self._prolog.consult(f.name)
-            
-            # for solution in self._prolog.query(query):
-            #     yield solution
+            # fp.close()
+
+            # f.name in unix format
+            self._prolog.consult(Path(fp.name).as_posix())
+            print(list(self._prolog.query("solve([N,D,V,E,O])")))
+
+            for solution in self._prolog.query(query):
+                yield solution
