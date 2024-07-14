@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Generator, TypeAlias
 
-from cripthmik.utils import Cryptarithm
+from ..utils import Cryptarithm
 
 Solution: TypeAlias = Dict[str, int]
 
