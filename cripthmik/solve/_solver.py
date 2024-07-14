@@ -10,7 +10,7 @@ class Solver(ABC):
     """Abstract class for a solver that solves cryptarithms.
 
     Methods:
-        solve(cryptarithm: Cryptarithm) -> Generator[Solution, None, None]: Solves the cryptarithm puzzle.
+        solve: Abstract method that solves a cryptarithm.
 
     Raises:
         NotImplementedError: If the solve method is not implemented.
@@ -18,10 +18,16 @@ class Solver(ABC):
     Example:
         >>> from cripthmik.solve import Solver
         >>> class MySolver(Solver):
-        ...     def solve(self, cryptarithm: Cryptarithm) -> Generator[Solution, None, None]:
+        ...     def solve(
+        ...         self, cryptarithm: Cryptarithm,
+        ...         allow_zero: bool = True, allow_leading_zero: bool = False
+        ...     ) -> Generator[Solution, None, None]:
         ...         pass
     """
 
     @abstractmethod
-    def solve(self, cryptarithm: Cryptarithm) -> Generator[Solution, None, None]:
+    def solve(
+        self, cryptarithm: Cryptarithm,
+        allow_zero: bool = True, allow_leading_zero: bool = False
+    ) -> Generator[Solution, None, None]:
         pass
