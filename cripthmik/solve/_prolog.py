@@ -5,10 +5,39 @@ from pyswip import Prolog
 from ..utils import Cryptarithm
 from ._solver import Solution, Solver
 
+import tempfile
+
 Rule: TypeAlias = str
 
 
 class GenerateAndTest(Solver):
+    """A solver that uses Generate and Test to solve cryptarithms.
+
+    Attributes:
+        rules: A list of rules that are used to solve the cryptarithm.
+
+    Methods:
+        solve: Solves a cryptarithm using Prolog.
+        _all_digits: Generates rules for all the digits in the cryptarithm.
+        _all_diff: Generates a rule that ensures all the digits are different.
+        _diff: Generates a rule that ensures a digit is different from a value.
+        _generate: Generates rules for the cryptarithm.
+        _test: Generates a rule that tests the cryptarithm.
+
+    Example:
+        >>> from cripthmik.solve import GenerateAndTest
+        >>> solver = GenerateAndTest()
+        >>> cryptarithm = Cryptarithm("SEND + MORE = MONEY")
+        >>> for solution in solver.solve(cryptarithm):
+        ...     print(solution)
+    """
+
+    _rules: List[Rule] = [
+        "digit(X) :- member(X, [0,1,2,3,4,5,6,7,8,9])",
+        "all_diff([])",
+        "all_diff([H|T]) :- \+member(H, T), all_diff(T)"
+    ]
+
     def __init__(self):
         super().__init__()
         self._prolog = Prolog()
@@ -62,5 +91,40 @@ class GenerateAndTest(Solver):
 
         return rule
 
-    def solve(self, cryptarithm: Cryptarithm) -> Generator[Solution, None, None]:
-        pass
+    def _query(self, cryptarithm: Cryptarithm) -> Rule:
+        operators = cryptarithm.operators
+        operands = cryptarithm.words
+        query = ""
+
+        for i in range(len(operands) - 1):
+            query += f"[{', '.join(operands[i])}], {operators[i]}, "
+        query += f"[{', '.join(operands[-1])}]"
+
+        return f"solve([{query}])"
+
+    def solve(
+        self, cryptarithm: Cryptarithm,
+        allow_zero: bool = True, allow_leading_zero: bool = False
+    ) -> Generator[Solution, None, None]:
+        # open temporary file to write rules
+        with tempfile.NamedTemporaryFile(mode="w", delete=False) as f:
+            for rule in self._rules:
+                f.write(rule + ".\n")
+            f.write("\n")
+
+            query = self._query(cryptarithm)
+            f.write(f"{query} :- ")
+            f.write(", ".join(map(str, self._generate(
+                cryptarithm, allow_zero, allow_leading_zero))))
+            f.write(f", {self._test(cryptarithm)}" + ".\n")
+            
+            
+
+            # print the path of the temporary file
+            print(f.name)
+            
+            input("Press Enter to continue...")
+            self._prolog.consult(f.name)
+            
+            # for solution in self._prolog.query(query):
+            #     yield solution
