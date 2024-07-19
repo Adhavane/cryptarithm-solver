@@ -15,4 +15,5 @@ if __name__ == "__main__":
     importlib.reload(pyswip)
     consult("knowledge_base1.pl", "father(michael,X)")
     importlib.reload(pyswip)
-    consult("knowledge_base2.pl", "father(peter,X)")
+    consult("knowledge_base2.pl", "father(michael,X)")
+    consult("knowledge_base2.pl", "mother(8)")
