@@ -1,2 +1,2 @@
-father(peter,john).
-father(peter,gina).
+father(peter,bob).
+father(peter,brian).

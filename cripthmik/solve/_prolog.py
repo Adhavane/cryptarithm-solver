@@ -41,7 +41,6 @@ class GenerateAndTest(Solver):
 
     def __init__(self):
         super().__init__()
-        self._prolog = Prolog()
 
     def _all_digits(self, cryptarithm: Cryptarithm) -> Set[Rule]:
         return {f"digit({letter})" for letter in cryptarithm.letters}
@@ -96,8 +95,6 @@ class GenerateAndTest(Solver):
         operators = cryptarithm.operators
         operands = cryptarithm.words
         query = ""
-        
-        return f"solve([{','.join(cryptarithm.letters)}])"
 
         for i in range(len(operands) - 1):
             query += f"[{','.join(operands[i])}], {operators[i]}, "
@@ -109,7 +106,10 @@ class GenerateAndTest(Solver):
         self, cryptarithm: Cryptarithm,
         allow_zero: bool = True, allow_leading_zero: bool = False
     ) -> Generator[Solution, None, None]:
-        # open temporary file to write rules
+        # Generate rules and solve cryptarithm
+        prolog = Prolog()  # Create a Prolog engine
+
+        # Create a temporary file to store the rules
         with tempfile.NamedTemporaryFile(mode="w", delete=False) as fp:
             for rule in self._rules:
                 fp.write(rule + ".\n")
@@ -120,16 +120,10 @@ class GenerateAndTest(Solver):
             fp.write(", ".join(map(str, self._generate(
                 cryptarithm, allow_zero, allow_leading_zero))))
             fp.write(f", {self._test(cryptarithm)}" + ".\n")
-            
-            # print the path of the temporary file
-            print(fp.name)
-            print(query)
-            
-            # fp.close()
 
-            # f.name in unix format
-            self._prolog.consult(Path(fp.name).as_posix())
-            print(list(self._prolog.query("solve([N,D,V,E,O])")))
+            fp.close()
 
-            for solution in self._prolog.query(query):
+            # Consult the temporary file and query the Prolog engine
+            prolog.consult(Path(fp.name).as_posix())  # Convert to Posix path
+            for solution in prolog.query(query):
                 yield solution

@@ -1,2 +1,2 @@
-father(michael,john).
-father(michael,gina).
+father(michael,aaron).
+father(michael,alison).
