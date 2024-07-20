@@ -24,6 +24,8 @@ class GenerateAndTest(Solver):
         _diff: Generates a rule that ensures a digit is different from a value.
         _generate: Generates rules for the cryptarithm.
         _test: Generates a rule that tests the cryptarithm.
+        _query: Generates a query to solve the cryptarithm.
+        _solve_worker: A worker function that solves the cryptarithm.
 
     Example:
         >>> from cripthmik.solve import GenerateAndTest
