@@ -1,24 +1,24 @@
+import itertools
 from typing import Generator, Set
 
-from ..utils import Cryptarithm
-from ._solver import Solution, Solver
-import itertools
 from tqdm import tqdm
+
+from ..utils import Cryptarithm, Solution
+from ._solver import Solution, Solver
 
 
 class Enumerate(Solver):
-    
+
     def __init__(self):
         super().__init__()
 
-    def _generate_perms(self, letters: str, leading_letters: Set[str]) -> Generator[Solution, None, None]:
+    def _generate_perms(
+        self, letters: str, leading_letters: Set[str]
+    ) -> Generator[Solution, None, None]:
         for perm in itertools.permutations(range(10), len(letters)):
             sol = dict(zip(letters, perm))
             yield sol
-            
-    def instantiateExpr(expr: str, perm: Solution) -> str:
-        return "".join(map(lambda c: str(perm.get(c, c)), expr))
-            
+
     def trimLeadingZero(inst_expr: str) -> str:
         return re.sub(r"\b0+(\d+)", r"\1", inst_expr)
 
@@ -34,16 +34,13 @@ class Enumerate(Solver):
         except:
             print(f"Unknown error in expression: {expr}")
             return False
-        
+
     def isLeadingZero(expr: str) -> bool:
         return re.search(r"\b0+(\d+)", expr) is not None
 
     def _valid_solution(
-        self, cryptarithm: Cryptarithm,
-        solution: Solution, allow_zero: bool, allow_leading_zero: bool
+        self, inst_expression: str, allow_zero: bool, allow_leading_zero: bool
     ) -> bool:
-        # Instantiate the expression with the current permutation
-        inst_expr = self.instantiateExpr(expr_trimmed, perm)
 
         if not allow_leading_zero and isLeadingZero(inst_expr):
             continue
@@ -59,9 +56,17 @@ class Enumerate(Solver):
         allow_zero: bool = True, allow_leading_zero: bool = False
     ) -> Generator[Solution, None, None]:
         # Generate all possible permutations of the variables
-        gen_perms = self._generate_perms(cryptarithm.letters, cryptarithm.leading_letters)
+        permutations_gen = self._generate_perms(
+            cryptarithm.letters, cryptarithm.leading_letters)
 
-        for perm in tqdm(gen_perms):
-            if _valid_solution(cryptarithm, perm, allow_zero, allow_leading_zero):
-                # If the solution is valid, yield it
+        # Iterate over all permutations
+        for perm in tqdm(permutations_gen):
+            # Instantiate the expression with the current permutation
+            inst_expression = cryptarithm.instantiate(perm)
+
+            # Trim the expression to remove spaces and convert the "=" to "=="
+            inst_expression = inst_expression.replace("=", "==")
+
+            # If the solution is valid, yield it
+            if self._valid_solution(inst_expression, allow_zero, allow_leading_zero):
                 yield perm

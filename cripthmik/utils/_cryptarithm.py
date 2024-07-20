@@ -1,6 +1,8 @@
 import re
 from typing import List, Set
 
+from . import Solution
+
 
 class Cryptarithm:
     """Cryptarithm class for solving cryptarithm puzzles.
@@ -95,3 +97,6 @@ class Cryptarithm:
         pattern = "[" + \
             "".join([f"\\{op}" for op in self._operators.values()]) + "]"
         return re.findall(pattern, self._puzzle)
+
+    def instantiate(self, solution: Solution) -> str:
+        return "".join(map(lambda c: str(solution.get(c, c)), self._puzzle))

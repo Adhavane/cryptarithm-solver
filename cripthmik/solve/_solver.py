@@ -1,9 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import Dict, Generator, TypeAlias
+from typing import Generator
 
-from ..utils import Cryptarithm
-
-Solution: TypeAlias = Dict[str, int]
+from ..utils import Cryptarithm, Solution
 
 
 class Solver(ABC):

@@ -6,15 +6,19 @@ Example:
     The cryptarithm "SEND + MORE = MONEY" can be solved as follows:
     S = 9, E = 5, N = 6, D = 7, M = 1, O = 0, R = 8, Y = 2
     Therefore, the solution is "9567 + 1085 = 10652".
-    
-Attributes:
-    OPERATORS (List[str]): List of valid operators for the cryptarithm puzzle.
-    
+
+Types:
+    Solution: Type alias for a dictionary containing the solution to a cryptarithm.
+
 Classes:
     Cryptarithm: Class for solving cryptarithm puzzles.
 """
 
+from typing import Dict, TypeAlias
 
 from ._cryptarithm import Cryptarithm
 
-__all__ = ["Cryptarithm"]
+Solution: TypeAlias = Dict[str, int]
+
+
+__all__ = ["Cryptarithm", "Solution"]
