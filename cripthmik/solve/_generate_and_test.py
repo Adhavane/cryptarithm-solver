@@ -116,8 +116,9 @@ class GenerateAndTest(Solver):
         worker = mp.Process(
             target=self._solve_worker,
             args=(
+                result_channel, result_end,
+                error_channel, error_end,
                 cryptarithm, allow_zero, allow_leading_zero,
-                result_channel, result_end, error_channel, error_end,
             ),
         )
         worker.start()
@@ -129,23 +130,26 @@ class GenerateAndTest(Solver):
                     yield result_channel.get()
             else:
                 break
-            
+
         # Close the worker process
         worker.join()
-        
+
         # Raise an exception if an error occurred
         if not error_end.empty():
             raise error_channel.get()
-        
+
         # Close the queues
         result_channel.close()
         result_end.close()
         error_channel.close()
         error_end.close()
-        
-    def _solve_worker(self, result_channel: mp.Queue, result_end: mp.Queue,
+
+    def _solve_worker(
+        self,
+        result_channel: mp.Queue, result_end: mp.Queue,
         error_channel: mp.Queue, error_end: mp.Queue,
-        cryptarithm: Cryptarithm, allow_zero: bool = True, allow_leading_zero: bool = False,
+        cryptarithm: Cryptarithm, allow_zero: bool = True,
+        allow_leading_zero: bool = False,
     ) -> None:
         try:
             # Generate rules and solve cryptarithm
@@ -168,10 +172,10 @@ class GenerateAndTest(Solver):
                 # Consult the temporary file and query the Prolog engine
                 prolog.consult(Path(fp.name).as_posix())  # Convert to Posix path
                 for solution in prolog.query(query):
-                    result_channel.put(Solution(solution))
+                    result_channel.put(solution)
                 result_end.put(None)
-                return
         except Exception as e:
             error_channel.put(e)
             error_end.put(None)
-            return
+
+        return
