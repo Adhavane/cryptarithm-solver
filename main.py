@@ -1,4 +1,4 @@
-from cripthmik.solve import GenerateAndTest
+from cripthmik.solve import GenerateAndTest, Enumerate
 from cripthmik.utils import Cryptarithm
 
 cryptarithm = Cryptarithm("SEND + MORE = MONEY")
@@ -12,10 +12,13 @@ if __name__ == "__main__":
     # print(solver._generate(cryptarithm, allow_zero=False, allow_leading_zero=True))
     # print(solver._test(cryptarithm))
     # print(solver._query(cryptarithm))
-    gen = solver.solve(cryptarithm)
-    print(next(solver.solve(cryptarithm)))
-    print(next(gen))
-    print(next(gen))
-    print(next(solver.solve(cryptarithm)))
-    print(next(solver.solve(cryptarithm)))
-    print(next(solver.solve(cryptarithm)))
+    # gen = solver.solve(cryptarithm)
+    # print(next(solver.solve(cryptarithm)))
+    # print(next(gen))
+    # print(next(gen))
+    # print(next(solver.solve(cryptarithm)))
+    # print(next(solver.solve(cryptarithm)))
+    # print(next(solver.solve(cryptarithm)))
+
+    solver2 = Enumerate()
+    solver2.solve(cryptarithm)
