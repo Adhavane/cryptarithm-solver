@@ -18,36 +18,42 @@ class Enumerate(Solver):
             sol = dict(zip(letters, perm))
             yield sol
 
-    def evalExpr(expr: str) -> bool:
+    def _evaluated_expr(self, expression: str) -> bool:
         try:
-            return eval(expr)
+            return eval(expression)
         except ZeroDivisionError:
-            print(f"Zero division error in expression: {expr}")
+            print(f"Zero division error in expression: {expression}")
             return False
         except SyntaxError:
-            print(f"Syntax error in expression: {expr}")
+            print(f"Syntax error in expression: {expression}")
             return False
         except:
-            print(f"Unknown error in expression: {expr}")
+            print(f"Unknown error in expression: {expression}")
             return False
 
     def _valid_solution(
         self, inst_expression: str, allow_zero: bool, allow_leading_zero: bool
     ) -> bool:
-        # TODO
+        # If the expression contains a leading zero, return False
         if (
             not allow_leading_zero
             and re.search(r"\b0+(\d+)", inst_expression) is not None
         ):
-            continue
+            return False
+        # If the expression contains a non-leading zero, return False
+        if (
+            not allow_zero
+            and allow_leading_zero
+            and re.search(r"\b0+(\d+)", inst_expression) is not None
+        ):
+            return False
 
         # Trim leading zeros
         inst_expression = inst_expression.replace("=", "==")
         inst_expression = re.sub(r"\b0+(\d+)", r"\1", inst_expression)
 
         # Evaluate the instantiated expression
-        if evalExpr(inst_expr):
-            yield perm
+        return self._evaluated_expr(inst_expression)
 
     def solve(
         self,
