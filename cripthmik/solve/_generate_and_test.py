@@ -1,12 +1,12 @@
+import multiprocessing as mp
+import tempfile
+from pathlib import Path
 from typing import Generator, List, Set, TypeAlias
 
 from pyswip import Prolog
 
 from ..utils import Cryptarithm
 from ._solver import Solution, Solver
-
-import tempfile
-from pathlib import Path
 
 Rule: TypeAlias = str
 
@@ -36,7 +36,7 @@ class GenerateAndTest(Solver):
     _rules: List[Rule] = [
         "digit(X) :- member(X, [0,1,2,3,4,5,6,7,8,9])",
         "all_diff([])",
-        "all_diff([H|T]) :- \+member(H, T), all_diff(T)"
+        "all_diff([H|T]) :- \+member(H, T), all_diff(T)",
     ]
 
     def __init__(self):
@@ -106,24 +106,72 @@ class GenerateAndTest(Solver):
         self, cryptarithm: Cryptarithm,
         allow_zero: bool = True, allow_leading_zero: bool = False
     ) -> Generator[Solution, None, None]:
-        # Generate rules and solve cryptarithm
-        prolog = Prolog()  # Create a Prolog engine
+        # Create a new process with a queue
+        result_channel = mp.Queue()
+        result_end = mp.Queue()
+        error_channel = mp.Queue()
+        error_end = mp.Queue()
 
-        # Create a temporary file to store the rules
-        with tempfile.NamedTemporaryFile(mode="w", delete=False) as fp:
-            for rule in self._rules:
-                fp.write(rule + ".\n")
-            fp.write("\n")
+        # Start the worker process
+        worker = mp.Process(
+            target=self._solve_worker,
+            args=(
+                cryptarithm, allow_zero, allow_leading_zero,
+                result_channel, result_end, error_channel, error_end,
+            ),
+        )
+        worker.start()
 
-            query = self._query(cryptarithm)
-            fp.write(f"{query} :- ")
-            fp.write(", ".join(map(str, self._generate(
-                cryptarithm, allow_zero, allow_leading_zero))))
-            fp.write(f", {self._test(cryptarithm)}" + ".\n")
+        # Yield the queue
+        while True:
+            if result_end.empty() and error_end.empty():
+                if not result_channel.empty():
+                    yield result_channel.get()
+            else:
+                break
+            
+        # Close the worker process
+        worker.join()
+        
+        # Raise an exception if an error occurred
+        if not error_end.empty():
+            raise error_channel.get()
+        
+        # Close the queues
+        result_channel.close()
+        result_end.close()
+        error_channel.close()
+        error_end.close()
+        
+    def _solve_worker(self, result_channel: mp.Queue, result_end: mp.Queue,
+        error_channel: mp.Queue, error_end: mp.Queue,
+        cryptarithm: Cryptarithm, allow_zero: bool = True, allow_leading_zero: bool = False,
+    ) -> None:
+        try:
+            # Generate rules and solve cryptarithm
+            prolog = Prolog()  # Create a Prolog engine
 
-            fp.close()
+            # Create a temporary file to store the rules
+            with tempfile.NamedTemporaryFile(mode="w", delete=False) as fp:
+                for rule in self._rules:
+                    fp.write(rule + ".\n")
+                fp.write("\n")
 
-            # Consult the temporary file and query the Prolog engine
-            prolog.consult(Path(fp.name).as_posix())  # Convert to Posix path
-            for solution in prolog.query(query):
-                yield solution
+                query = self._query(cryptarithm)
+                fp.write(f"{query} :- ")
+                fp.write(", ".join(map(str, self._generate(
+                    cryptarithm, allow_zero, allow_leading_zero))))
+                fp.write(f", {self._test(cryptarithm)}" + ".\n")
+
+                fp.close()
+
+                # Consult the temporary file and query the Prolog engine
+                prolog.consult(Path(fp.name).as_posix())  # Convert to Posix path
+                for solution in prolog.query(query):
+                    result_channel.put(Solution(solution))
+                result_end.put(None)
+                return
+        except Exception as e:
+            error_channel.put(e)
+            error_end.put(None)
+            return
