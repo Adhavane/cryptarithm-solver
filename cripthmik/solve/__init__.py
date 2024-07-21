@@ -2,6 +2,7 @@
 
 Classes:
     Solver: Abstract class for a solver that solves cryptarithms.
+    PrologSolver: A solver that uses Prolog to solve cryptarithms.
     Enumerate: A solver that uses Enumeration to solve cryptarithms.
     GenerateAndTest: A solver that uses Generate and Test to solve cryptarithms.
 
@@ -13,8 +14,9 @@ Example:
 """
 
 
-from ._solver import Solver
 from ._enumerate import Enumerate
 from ._generate_and_test import GenerateAndTest
+from ._prolog import PrologSolver
+from ._solver import Solver
 
-__all__ = ["Solver", "Enumerate", "GenerateAndTest"]
+__all__ = ["Solver", "PrologSolver", "GenerateAndTest", "Enumerate"]
