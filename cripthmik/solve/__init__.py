@@ -5,6 +5,7 @@ Classes:
     PrologSolver: A solver that uses Prolog to solve cryptarithms.
     Enumerate: A solver that uses Enumeration to solve cryptarithms.
     GenerateAndTest: A solver that uses Generate and Test to solve cryptarithms.
+    ConstraintProgramming: A solver that uses Constraint Programming to solve cryptarithms.
 
 Example:
     >>> from cripthmik.solve import Solver
@@ -14,9 +15,16 @@ Example:
 """
 
 
+from ._constraint_programming import ConstraintProgramming
 from ._enumerate import Enumerate
 from ._generate_and_test import GenerateAndTest
 from ._prolog import PrologSolver
 from ._solver import Solver
 
-__all__ = ["Solver", "PrologSolver", "GenerateAndTest", "Enumerate"]
+__all__ = [
+    "Solver",
+    "PrologSolver",
+    "GenerateAndTest",
+    "Enumerate",
+    "ConstraintProgramming",
+]

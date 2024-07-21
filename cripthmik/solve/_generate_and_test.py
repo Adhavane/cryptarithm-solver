@@ -35,11 +35,11 @@ class GenerateAndTest(PrologSolver):
     def __init__(self):
         super().__init__()
 
-    def _all_digits(self, cryptarithm: Cryptarithm) -> Set[Rule]:
-        return {f"digit({letter})" for letter in cryptarithm.letters}
+    def _all_digits(self, letters: Set[str]) -> Set[Rule]:
+        return {f"digit({letter})" for letter in letters}
 
-    def _all_diff(self, cryptarithm: Cryptarithm) -> Rule:
-        return f"all_diff([{','.join(cryptarithm.letters)}])"
+    def _all_diff(self, letters: Set[str]) -> Rule:
+        return f"all_diff([{','.join(letters)}])"
 
     def _diff(self, letter: str, value: int) -> Rule:
         return f"dif({letter}, {value})"
@@ -50,8 +50,8 @@ class GenerateAndTest(PrologSolver):
     ) -> List[Rule]:
         generated = []
 
-        generated += list(self._all_digits(cryptarithm))
-        generated.append(self._all_diff(cryptarithm))
+        generated += list(self._all_digits(cryptarithm.letters))
+        generated.append(self._all_diff(cryptarithm.letters))
         if not allow_zero:
             for char in cryptarithm.letters:
                 generated.append(self._diff(char, 0))
