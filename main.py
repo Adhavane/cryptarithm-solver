@@ -5,7 +5,7 @@ cryptarithm = Cryptarithm("SEND + MORE = MONEY")
 cryptarithm = Cryptarithm("ODD + ODD = EVEN")
 
 if __name__ == "__main__":
-    solver = GenerateAndTest()
+    # solver = GenerateAndTest()
     # print(solver._all_digits(cryptarithm))
     # print(solver._all_diff(cryptarithm))
     # print(solver._all_diff(cryptarithm))
@@ -21,4 +21,7 @@ if __name__ == "__main__":
     # print(next(solver.solve(cryptarithm)))
 
     solver2 = Enumerate()
-    solver2.solve(cryptarithm)
+    gen = solver2.solve(cryptarithm)
+    print(next(gen))
+    print(next(gen))
+    print(next(gen))

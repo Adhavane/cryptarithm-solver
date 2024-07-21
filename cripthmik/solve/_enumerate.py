@@ -22,13 +22,10 @@ class Enumerate(Solver):
         try:
             return eval(expression)
         except ZeroDivisionError:
-            print(f"Zero division error in expression: {expression}")
             return False
         except SyntaxError:
-            print(f"Syntax error in expression: {expression}")
             return False
-        except:
-            print(f"Unknown error in expression: {expression}")
+        except: # Unknown error
             return False
 
     def _valid_solution(
@@ -37,14 +34,14 @@ class Enumerate(Solver):
         # If the expression contains a leading zero, return False
         if (
             not allow_leading_zero
-            and re.search(r"\b0+(\d+)", inst_expression) is not None
+            and re.search(r"\b0+([1-9]*)", inst_expression) is not None
         ):
             return False
         # If the expression contains a non-leading zero, return False
         if (
             not allow_zero
             and allow_leading_zero
-            and re.search(r"\b0+(\d+)", inst_expression) is not None
+            and re.search(r"\b([1-9]+)0+([1-9]*)", inst_expression) is not None
         ):
             return False
 
@@ -56,18 +53,14 @@ class Enumerate(Solver):
         return self._evaluated_expr(inst_expression)
 
     def solve(
-        self,
-        cryptarithm: Cryptarithm,
-        allow_zero: bool = True,
-        allow_leading_zero: bool = False,
+        self, cryptarithm: Cryptarithm,
+        allow_zero: bool = True, allow_leading_zero: bool = False
     ) -> Generator[Solution, None, None]:
         # Generate all possible permutations of the variables
-        permutations_gen = self._generate_perms(
-            cryptarithm.letters, cryptarithm.leading_letters
-        )
+        permutations_gen = self._generate_perms(cryptarithm.letters)
 
         # Iterate over all permutations
-        for perm in tqdm(permutations_gen):
+        for perm in tqdm(permutations_gen, disable=True):
             # Instantiate the expression with the current permutation
             inst_expression = cryptarithm.instantiate(perm)
 
