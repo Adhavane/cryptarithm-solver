@@ -1,12 +1,6 @@
-import multiprocessing as mp
-import tempfile
-from pathlib import Path
-from typing import Generator, List, Set, TypeAlias
-
-from pyswip import Prolog
+from typing import List, Set
 
 from ..utils import Cryptarithm
-from ._solver import Solution, Solver
 from ._prolog import PrologSolver, Rule
 
 
@@ -17,14 +11,12 @@ class GenerateAndTest(PrologSolver):
         rules: A list of rules that are used to solve the cryptarithm.
 
     Methods:
-        solve: Solves a cryptarithm using Prolog.
         _all_digits: Generates rules for all the digits in the cryptarithm.
         _all_diff: Generates a rule that ensures all the digits are different.
         _diff: Generates a rule that ensures a digit is different from a value.
         _generate: Generates rules for the cryptarithm.
         _test: Generates a rule that tests the cryptarithm.
-        _query: Generates a query to solve the cryptarithm.
-        _solve_worker: A worker function that solves the cryptarithm.
+        _query_rules: Generates the rules that are used to solve the cryptarithm.
 
     Example:
         >>> from cripthmik.solve import GenerateAndTest

@@ -1,18 +1,41 @@
 import multiprocessing as mp
 import tempfile
+from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Generator, List, Set, TypeAlias
+from typing import Generator, List, TypeAlias
 
 from pyswip import Prolog
 
 from ..utils import Cryptarithm
 from ._solver import Solution, Solver
-from abc import ABC, abstractmethod
 
 Rule: TypeAlias = str
 
 
 class PrologSolver(Solver, ABC):
+    """A solver that uses Prolog to solve cryptarithms.
+    
+    Attributes:
+        rules: A list of rules that are used to solve the cryptarithm.
+        
+    Methods:
+        _query: Generates the query that is used to solve the cryptarithm.
+        solve: Solves the cryptarithm and yields the solutions.
+        _solve_worker: Worker function that solves the cryptarithm.
+        _query_rules: Generates the rules that are used to solve the cryptarithm.
+        
+    Example:
+        >>> from cripthmik.solve import PrologSolver
+        >>> class MySolver(PrologSolver):
+        ...     def _query_rules(self, cryptarithm, allow_zero, allow_leading_zero):
+        ...         pass
+        >>> solver = MySolver()
+        >>> cryptarithm = Cryptarithm("SEND + MORE = MONEY")
+        >>> for solution in solver.solve(cryptarithm):
+        ...     print(solution)
+    """
+
+    _rules: List[Rule] = []
 
     def __init__(self):
         super().__init__()
@@ -90,7 +113,7 @@ class PrologSolver(Solver, ABC):
                 query = self._query(cryptarithm)
                 fp.write(f"{query} :- ")
                 fp.write(", ".join(map(str, self._query_rules(
-                    cryptarithm, allow_zero, allow_leading_zero))))
+                    cryptarithm, allow_zero, allow_leading_zero))) + ".\n")
                 fp.write("\n")
 
                 fp.close()
