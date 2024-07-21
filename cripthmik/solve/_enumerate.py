@@ -10,16 +10,16 @@ from ._solver import Solution, Solver
 
 class Enumerate(Solver):
     """A solver that uses Enumeration to solve cryptarithms.
-    
+
     Attributes:
         None
-        
+
     Methods:
         _generate_perms: Generates all possible permutations of the variables.
         _evaluated_expr: Evaluates an expression and returns True if it is valid.
         _valid_solution: Checks if a solution is valid.
         solve: Solves a cryptarithm using Enumeration.
-        
+
     Example:
         >>> from cripthmik.solve import Enumerate
         >>> solver = Enumerate()

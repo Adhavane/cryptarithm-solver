@@ -14,16 +14,17 @@ Rule: TypeAlias = str
 
 class PrologSolver(Solver, ABC):
     """A solver that uses Prolog to solve cryptarithms.
-    
+
     Attributes:
         rules: A list of rules that are used to solve the cryptarithm.
-        
+
     Methods:
+        _query_predicate: Generates a query for the predicate of the cryptarithm.
         _query: Generates the query that is used to solve the cryptarithm.
         solve: Solves the cryptarithm and yields the solutions.
         _solve_worker: Worker function that solves the cryptarithm.
         _query_rules: Generates the rules that are used to solve the cryptarithm.
-        
+
     Example:
         >>> from cripthmik.solve import PrologSolver
         >>> class MySolver(PrologSolver):
@@ -40,7 +41,7 @@ class PrologSolver(Solver, ABC):
     def __init__(self):
         super().__init__()
 
-    def _query(self, cryptarithm: Cryptarithm) -> Rule:
+    def _query_predicate(self, cryptarithm: Cryptarithm) -> Rule:
         operators = cryptarithm.operators
         operands = cryptarithm.words
         query = ""
@@ -50,6 +51,9 @@ class PrologSolver(Solver, ABC):
         query += f"[{','.join(operands[-1])}]"
 
         return f"solve([{query}])"
+
+    def _query(self, cryptarithm: Cryptarithm) -> Rule:
+        return self._query_predicate(cryptarithm)
 
     def solve(
         self, cryptarithm: Cryptarithm,
@@ -110,8 +114,7 @@ class PrologSolver(Solver, ABC):
                     fp.write(rule + ".\n")
                 fp.write("\n")
 
-                query = self._query(cryptarithm)
-                fp.write(f"{query} :- ")
+                fp.write(f"{self._query_predicate(cryptarithm)} :- ")
                 fp.write(", ".join(map(str, self._query_rules(
                     cryptarithm, allow_zero, allow_leading_zero))) + ".\n")
                 fp.write("\n")
@@ -120,7 +123,7 @@ class PrologSolver(Solver, ABC):
 
                 # Consult the temporary file and query the Prolog engine
                 prolog.consult(Path(fp.name).as_posix())  # Convert to Posix path
-                for solution in prolog.query(query):
+                for solution in prolog.query(self._query(cryptarithm)):
                     result_channel.put(solution)
                 result_end.put(None)
         except Exception as e:

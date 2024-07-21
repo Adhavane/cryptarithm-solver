@@ -7,16 +7,17 @@ from ._prolog import Rule
 
 class ConstraintProgramming(GenerateAndTest):
     """A solver that uses Constraint Programming to solve cryptarithms.
-    
+
     Attributes:
         rules: A list of rules that are used to solve the cryptarithm.
-        
+
     Methods:
         _all_digits: Generates rules for all the digits in the cryptarithm.
         _all_diff: Generates a rule that ensures all the digits are different.
         _diff: Generates a rule that ensures a digit is different from a value.
         _test: Generates a rule that tests the cryptarithm.
-        
+        _query: Generates the query that is used to solve the cryptarithm.
+
     Example:
         >>> from cripthmik.solve import ConstraintProgramming
         >>> solver = ConstraintProgramming()
@@ -41,3 +42,9 @@ class ConstraintProgramming(GenerateAndTest):
 
     def _test(self, cryptarithm: Cryptarithm) -> Rule:
         return super()._test(cryptarithm).replace("=:=", "#=")
+
+    def _query(self, cryptarithm: Cryptarithm) -> Rule:
+        return (
+            self._query_predicate(cryptarithm)
+            + f", label([{','.join(cryptarithm.letters)}])"
+        )
