@@ -14,11 +14,8 @@ Classes:
     Cryptarithm: Class for solving cryptarithm puzzles.
 """
 
-from typing import Dict, TypeAlias
 
 from ._cryptarithm import Cryptarithm
-
-Solution: TypeAlias = Dict[str, int]
-
+from ._types import Solution
 
 __all__ = ["Cryptarithm", "Solution"]

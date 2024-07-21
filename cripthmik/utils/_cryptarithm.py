@@ -1,7 +1,7 @@
 import re
 from typing import List, Set
 
-from . import Solution
+from ._types import Solution
 
 
 class Cryptarithm:
