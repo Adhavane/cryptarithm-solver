@@ -5,19 +5,21 @@
 - [🔍 Overview](#-overview)
 - [📦 Dependencies](#-dependencies)
 - [🗂️ Repository Structure](#️-repository-structure)
+- [📥 Installation](#-installation)
+- [🚀 Usage](#-usage)
 - [🤝 Contributing](#-contributing)
 - [📄 License](#-license)
 - [📫 Contact](#-contact)
 
 ## 🔍 Overview
 
-ʞᴉɯɥʇdʎɹɔ is a simple and easy-to-use Python library designed for effortlessly solving cryptarithms with just a few lines of code.
+ɔᴉɯɥʇdʎɹʞ is a simple and easy-to-use Python library designed for effortlessly **solving cryptarithms** with just a few lines of code.
 
-Cryptarithms, also known as [alphametics](https://en.wikipedia.org/wiki/Verbal_arithmetic), are puzzles where digits are replaced by letters of the alphabet. The goal is to find the correct mapping of letters to digits to make a valid arithmetic equation. For example, in the cryptarithm `SEND + MORE = MONEY`, each letter represents a unique digit, and the task is to find the correct assignment of digits to letters to make the equation true.
+Cryptarithms, also known as [alphametics](https://en.wikipedia.org/wiki/Verbal_arithmetic), are **puzzles** where digits are replaced by letters of the alphabet. The goal is to find the correct mapping of letters to digits to make a valid arithmetic equation. For example, in the cryptarithm `SEND + MORE = MONEY`, each letter represents a unique digit, and the task is to find the correct assignment of digits to letters **to make the equation true**.
 
 The library provides several algorithms to tackle these puzzles, including brute-force, generate-and-test, and constraint programming methods. The *[brute-force method](https://en.wikipedia.org/wiki/Enumeration_algorithm)* involves exhaustively enumerating all possible combinations to find a solution. The *[generate-and-test](https://en.wikipedia.org/wiki/Trial_and_error)* approach iteratively generates potential solutions and tests their validity. Meanwhile, *[constraint programming](https://en.wikipedia.org/wiki/Constraint_programming)* narrows down the search space by applying specific rules and constraints, making the solving process faster and more efficient.
 
-Whether you are a beginner or an experienced puzzle solver, ʞᴉɯɥʇdʎɹɔ's versatile algorithms make solving even the most challenging cryptarithms accessible and efficient.
+Whether you are a beginner or an experienced puzzle solver, ʞᴉɯɥʇdᴉɹʞ's **versatile algorithms** make solving even the most challenging cryptarithms accessible and efficient.
 
 ## 📦 Dependencies
 
@@ -48,7 +50,7 @@ The repository is organized as follows:
 
 The `crypthmik` package contains the library's source code, including the solver and utility modules.
 
-📥 Installation
+## 📥 Installation
 
 To install the library, you can clone the repository and install the required dependencies using the following commands:
 
@@ -63,7 +65,9 @@ cd cryptarithm-solver
 pip install -r requirements.txt
 ```
 
-🚀 Usage
+## 🚀 Usage
+
+Here is an example of how to use the library to solve a cryptarithm:
 
 ```python
 from crypthmik.utils import Cryptarithm
@@ -90,9 +94,9 @@ for solver in [brute_force_solver, generate_and_test_solver, constraint_solver]:
 
 ## 🤝 Contributing
 
-This project is a small, fun, and educational endeavor to solve cryptarithm puzzles. It was created to develop my skills in Python and explore different problem-solving techniques.
+This project is a **small**, **fun**, and **educational** endeavor to solve cryptarithm puzzles. It was created to develop my skills in Python and explore different problem-solving techniques.
 
-If you would like to contribute to the project, feel free to fork the repository, make changes, and submit a pull request. Any contributions, bug fixes, or improvements are welcome!
+If you would like **to contribute** to the project, feel free **to fork** the repository, make changes, and submit a **pull request**. Any contributions, bug fixes, or improvements are welcome!
 
 ## 📄 License
 
@@ -100,4 +104,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📫 Contact
 
-If you have any questions, suggestions, or feedback, feel free to reach out to me. I would love to hear from you!
+If you have any **questions**, **suggestions**, or **feedback**, feel free to reach out to me. I would love to hear from you!
