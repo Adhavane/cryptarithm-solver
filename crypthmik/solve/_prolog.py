@@ -6,8 +6,8 @@ from typing import Generator, List
 
 from pyswip import Prolog
 
-from ..utils import Cryptarithm, PrologCryptarithm
-from ._solver import PrologRule, PrologSolution, Solution, Solver
+from ..utils import Cryptarithm, PrologCryptarithm, PrologRule, Solution
+from ._solver import Solver
 
 
 class PrologSolver(Solver, ABC):
@@ -81,7 +81,7 @@ class PrologSolver(Solver, ABC):
         while True:
             if result_end.empty() and error_end.empty():
                 if not result_channel.empty():
-                    yield result_channel.get()
+                    yield pl_cryptarithm.convert_solution(result_channel.get())
             else:
                 break
 

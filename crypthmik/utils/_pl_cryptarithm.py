@@ -3,6 +3,7 @@ from typing import List, Set
 from multipledispatch import dispatch
 
 from ._cryptarithm import Cryptarithm
+from ._types import PrologSolution, Solution
 
 
 class PrologCryptarithm(Cryptarithm):
@@ -71,3 +72,13 @@ class PrologCryptarithm(Cryptarithm):
     @property
     def leading_letters(self) -> Set[str]:
         return set([word[0] for word in self.words])
+
+    def convert_solution(self, pl_solution: PrologSolution) -> Solution:
+        return {
+            (
+                key[:-len(self._lowercase_suffix)].lower()
+                if key.endswith(self._lowercase_suffix)
+                else key
+            ): value
+            for key, value in pl_solution.items()
+        }
