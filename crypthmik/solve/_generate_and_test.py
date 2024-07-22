@@ -1,6 +1,6 @@
 from typing import List, Set
 
-from ..utils import Cryptarithm
+from ..utils import PrologCryptarithm
 from ._prolog import PrologSolver, Rule
 
 
@@ -45,29 +45,29 @@ class GenerateAndTest(PrologSolver):
         return f"dif({letter}, {value})"
 
     def _generate(
-        self, cryptarithm: Cryptarithm,
+        self, pl_cryptarithm: PrologCryptarithm,
         allow_zero: bool = True, allow_leading_zero: bool = False
     ) -> List[Rule]:
         generated = []
 
-        generated += list(self._all_digits(cryptarithm.letters))
-        generated.append(self._all_diff(cryptarithm.letters))
+        generated += list(self._all_digits(pl_cryptarithm.letters))
+        generated.append(self._all_diff(pl_cryptarithm.letters))
         if not allow_zero:
-            for char in cryptarithm.letters:
+            for char in pl_cryptarithm.letters:
                 generated.append(self._diff(char, 0))
         if not allow_leading_zero:
-            for char in cryptarithm.leading_letters:
+            for char in pl_cryptarithm.leading_letters:
                 generated.append(self._diff(char, 0))
         if allow_leading_zero:
-            for char in cryptarithm.leading_letters:
+            for char in pl_cryptarithm.leading_letters:
                 if f"dif({char}, 0)" in generated:
                     generated.remove(self._diff(char, 0))
 
         return generated
 
-    def _test(self, cryptarithm: Cryptarithm) -> Rule:
-        operands = cryptarithm.words
-        operators = cryptarithm.operators
+    def _test(self, pl_cryptarithm: PrologCryptarithm) -> Rule:
+        operands = pl_cryptarithm.words
+        operators = pl_cryptarithm.operators
         rule = ""
 
         for i in range(len(operators)):
@@ -85,9 +85,9 @@ class GenerateAndTest(PrologSolver):
         return rule
 
     def _query_rules(
-        self, cryptarithm: Cryptarithm,
+        self, pl_cryptarithm: PrologCryptarithm,
         allow_zero: bool, allow_leading_zero: bool
     ) -> List[Rule]:
-        return self._generate(cryptarithm, allow_zero, allow_leading_zero) + [
-            self._test(cryptarithm)
+        return self._generate(pl_cryptarithm, allow_zero, allow_leading_zero) + [
+            self._test(pl_cryptarithm)
         ]

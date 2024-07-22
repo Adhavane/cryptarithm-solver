@@ -88,7 +88,7 @@ class Cryptarithm:
         return self._case_sensitive
 
     @property
-    def words(self) -> List[str]:
+    def words(self) -> List[str] | List[List[str]]:
         return re.findall(r"[a-zA-Z]+", self._puzzle)
 
     @property

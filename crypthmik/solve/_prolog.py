@@ -6,7 +6,7 @@ from typing import Generator, List, TypeAlias
 
 from pyswip import Prolog
 
-from ..utils import Cryptarithm
+from ..utils import Cryptarithm, PrologCryptarithm
 from ._solver import Solution, Solver
 
 Rule: TypeAlias = str
@@ -41,9 +41,9 @@ class PrologSolver(Solver, ABC):
     def __init__(self):
         super().__init__()
 
-    def _query_predicate(self, cryptarithm: Cryptarithm) -> Rule:
-        operators = cryptarithm.operators
-        operands = cryptarithm.words
+    def _query_predicate(self, pl_cryptarithm: PrologCryptarithm) -> Rule:
+        operators = pl_cryptarithm.operators
+        operands = pl_cryptarithm.words
         query = ""
 
         for i in range(len(operands) - 1):
@@ -52,8 +52,8 @@ class PrologSolver(Solver, ABC):
 
         return f"solve([{query}])"
 
-    def _query(self, cryptarithm: Cryptarithm) -> Rule:
-        return self._query_predicate(cryptarithm)
+    def _query(self, pl_cryptarithm: PrologCryptarithm) -> Rule:
+        return self._query_predicate(pl_cryptarithm)
 
     def solve(
         self, cryptarithm: Cryptarithm,
@@ -65,13 +65,16 @@ class PrologSolver(Solver, ABC):
         error_channel = mp.Queue()
         error_end = mp.Queue()
 
+        # Create a Prolog cryptarithm
+        pl_cryptarithm = PrologCryptarithm(cryptarithm)
+
         # Start the worker process
         worker = mp.Process(
             target=self._solve_worker,
             args=(
                 result_channel, result_end,
                 error_channel, error_end,
-                cryptarithm, allow_zero, allow_leading_zero,
+                pl_cryptarithm, allow_zero, allow_leading_zero,
             ),
         )
         worker.start()
@@ -101,8 +104,8 @@ class PrologSolver(Solver, ABC):
         self,
         result_channel: mp.Queue, result_end: mp.Queue,
         error_channel: mp.Queue, error_end: mp.Queue,
-        cryptarithm: Cryptarithm, allow_zero: bool = True,
-        allow_leading_zero: bool = False,
+        pl_cryptarithm: PrologCryptarithm, allow_zero: bool = True,
+        allow_leading_zero: bool = False
     ) -> None:
         try:
             # Generate rules and solve cryptarithm
@@ -114,16 +117,16 @@ class PrologSolver(Solver, ABC):
                     fp.write(rule + ".\n")
                 fp.write("\n")
 
-                fp.write(f"{self._query_predicate(cryptarithm)} :- ")
+                fp.write(f"{self._query_predicate(pl_cryptarithm)} :- ")
                 fp.write(", ".join(map(str, self._query_rules(
-                    cryptarithm, allow_zero, allow_leading_zero))) + ".\n")
+                    pl_cryptarithm, allow_zero, allow_leading_zero))) + ".\n")
                 fp.write("\n")
 
                 fp.close()
 
                 # Consult the temporary file and query the Prolog engine
                 prolog.consult(Path(fp.name).as_posix())  # Convert to Posix path
-                for solution in prolog.query(self._query(cryptarithm)):
+                for solution in prolog.query(self._query(pl_cryptarithm)):
                     result_channel.put(solution)
                 result_end.put(None)
         except Exception as e:
@@ -134,6 +137,7 @@ class PrologSolver(Solver, ABC):
 
     @abstractmethod
     def _query_rules(
-        self, cryptarithm: Cryptarithm, allow_zero: bool, allow_leading_zero: bool
+        self, pl_cryptarithm: PrologCryptarithm,
+        allow_zero: bool, allow_leading_zero: bool
     ) -> List[Rule]:
         pass

@@ -18,17 +18,17 @@ class PrologCryptarithm(Cryptarithm):
         cryptarithm (Cryptarithm): A Cryptarithm object.
 
     Attributes:
-        words_prolog (List[List[str]]): List of words in the puzzle in Prolog format.
-        variables (Set[str]): Set of unique variables in the puzzle.
-        leading_variables (Set[str]): Set of leading variables in the puzzle.
+        words (List[List[str]]): List of words in the puzzle in Prolog format.
+        letters (Set[str]): Set of letters in the puzzle.
+        leading_letters (Set[str]): Set of leading letters in the puzzle.
 
     Example:
         >>> puzzle = PrologCryptarithm("My + Name = Is", case_sensitive=True)
-        >>> puzzle.words_prolog
+        >>> puzzle.words
         [['M', 'Y_lowercase'], ['N', 'A', 'M', 'E_lowercase'], ['I', 'S_lowercase']]
-        >>> puzzle.variables
+        >>> puzzle.letters
         {'Y_lowercase', 'M', 'E_lowercase', 'N', 'A', 'I', 'S_lowercase'}
-        >>> puzzle.leading_variables
+        >>> puzzle.leading_letters
         {'M', 'N', 'I'}
     """
 
@@ -43,7 +43,7 @@ class PrologCryptarithm(Cryptarithm):
         super().__init__(cryptarithm.puzzle, cryptarithm.case_sensitive)
 
     @property
-    def words_prolog(self) -> List[List[str]]:
+    def words(self) -> List[str] | List[List[str]]:
         # Convert the words to Prolog format by adding the lowercase suffix to
         # the lowercase letters.
         # This is necessary because Prolog is case-sensitive, so we need to
@@ -60,14 +60,14 @@ class PrologCryptarithm(Cryptarithm):
                         word,
                     )
                 ),
-                self.words,
+                super().words,
             )
         )
 
     @property
-    def variables(self) -> Set[str]:
-        return set([letter for word in self.words_prolog for letter in word])
+    def letters(self) -> Set[str]:
+        return set([letter for word in self.words for letter in word])
 
     @property
-    def leading_variables(self) -> Set[str]:
-        return set([word[0] for word in self.words_prolog])
+    def leading_letters(self) -> Set[str]:
+        return set([word[0] for word in self.words])
