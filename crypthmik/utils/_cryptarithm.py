@@ -1,5 +1,5 @@
 import re
-from typing import List, Set
+from typing import Dict, List, Set
 
 from ._types import Solution
 
@@ -12,6 +12,7 @@ class Cryptarithm:
         case_sensitive (bool): Whether the puzzle is case sensitive. Default is False.
 
     Attributes:
+        _operators_map (Dict[str, str]): Mapping of operators to symbols.
         puzzle (str): The formatted puzzle.
         case_sensitive (bool): Whether the puzzle is case sensitive.
         words (List[str]): List of words in the puzzle.
@@ -38,7 +39,7 @@ class Cryptarithm:
         {'+', '='}
     """
 
-    _operators = {
+    _operators_map: Dict[str, str] = {
         "addition": "+",
         "subtraction": "-",
         "multiplication": "*",
@@ -66,13 +67,13 @@ class Cryptarithm:
             raise ValueError("Puzzle must be a string.")
 
         # Check if puzzle is not empty
-        if puzzle.count(self._operators["equals"]) != 1:
+        if puzzle.count(self._operators_map["equals"]) != 1:
             raise ValueError("Puzzle must contain exactly one equals sign.")
 
         # Check if puzzle contains only valid characters
         pattern = (
             r"^[a-zA-Z]+(?:["
-            + "".join([f"\\{op}" for op in self._operators.values()])
+            + "".join([f"\\{op}" for op in self._operators_map.values()])
             + r"][a-zA-Z]+)+$"
         )
         if not re.match(pattern, puzzle):
@@ -101,7 +102,7 @@ class Cryptarithm:
     @property
     def operators(self) -> List[str]:
         pattern = "[" + \
-            "".join([f"\\{op}" for op in self._operators.values()]) + "]"
+            "".join([f"\\{op}" for op in self._operators_map.values()]) + "]"
         return re.findall(pattern, self._puzzle)
 
     def instantiate(self, solution: Solution) -> str:
