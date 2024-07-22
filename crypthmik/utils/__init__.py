@@ -16,6 +16,7 @@ Classes:
 
 
 from ._cryptarithm import Cryptarithm
+from ._pl_cryptarithm import PrologCryptarithm
 from ._types import Solution
 
-__all__ = ["Cryptarithm", "Solution"]
+__all__ = ["Cryptarithm", "PrologCryptarithm", "Solution"]
