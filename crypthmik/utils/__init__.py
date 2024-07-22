@@ -22,6 +22,12 @@ Classes:
 
 from ._cryptarithm import Cryptarithm
 from ._pl_cryptarithm import PrologCryptarithm
-from ._types import Solution
+from ._types import PrologRule, PrologSolution, Solution
 
-__all__ = ["Cryptarithm", "PrologCryptarithm", "Solution"]
+__all__ = [
+    "Cryptarithm",
+    "PrologCryptarithm",
+    "Solution",
+    "PrologSolution",
+    "PrologRule",
+]

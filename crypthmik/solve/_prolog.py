@@ -2,14 +2,12 @@ import multiprocessing as mp
 import tempfile
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Generator, List, TypeAlias
+from typing import Generator, List
 
 from pyswip import Prolog
 
 from ..utils import Cryptarithm, PrologCryptarithm
-from ._solver import Solution, Solver
-
-Rule: TypeAlias = str
+from ._solver import PrologRule, PrologSolution, Solution, Solver
 
 
 class PrologSolver(Solver, ABC):
@@ -36,12 +34,12 @@ class PrologSolver(Solver, ABC):
         ...     print(solution)
     """
 
-    _rules: List[Rule] = []
+    _rules: List[PrologRule] = []
 
     def __init__(self):
         super().__init__()
 
-    def _query_predicate(self, pl_cryptarithm: PrologCryptarithm) -> Rule:
+    def _query_predicate(self, pl_cryptarithm: PrologCryptarithm) -> PrologRule:
         operators = pl_cryptarithm.operators
         operands = pl_cryptarithm.words
         query = ""
@@ -52,7 +50,7 @@ class PrologSolver(Solver, ABC):
 
         return f"solve([{query}])"
 
-    def _query(self, pl_cryptarithm: PrologCryptarithm) -> Rule:
+    def _query(self, pl_cryptarithm: PrologCryptarithm) -> PrologRule:
         return self._query_predicate(pl_cryptarithm)
 
     def solve(
@@ -139,5 +137,5 @@ class PrologSolver(Solver, ABC):
     def _query_rules(
         self, pl_cryptarithm: PrologCryptarithm,
         allow_zero: bool, allow_leading_zero: bool
-    ) -> List[Rule]:
+    ) -> List[PrologRule]:
         pass
