@@ -13,6 +13,7 @@ class Cryptarithm:
 
     Attributes:
         puzzle (str): The formatted puzzle.
+        case_sensitive (bool): Whether the puzzle is case sensitive.
         words (List[str]): List of words in the puzzle.
         letters (Set[str]): Set of unique letters in the puzzle.
         leading_letters (Set[str]): Set of leading letters in the puzzle.
@@ -51,6 +52,7 @@ class Cryptarithm:
         self._validate_puzzle(puzzle)
 
         self._puzzle: str = puzzle
+        self._case_sensitive: bool = case_sensitive
 
     def _format_puzzle(self, puzzle: str, case_sensitive: bool = False) -> str:
         if not case_sensitive:  # Convert to uppercase if not case sensitive
@@ -79,6 +81,10 @@ class Cryptarithm:
     @property
     def puzzle(self) -> str:
         return self._puzzle
+
+    @property
+    def case_sensitive(self) -> bool:
+        return self._case_sensitive
 
     @property
     def words(self) -> List[str]:
