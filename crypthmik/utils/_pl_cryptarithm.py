@@ -36,7 +36,7 @@ class PrologCryptarithm(Cryptarithm):
     def __init__(self, puzzle: str, case_sensitive: bool = True):
         super().__init__(puzzle, case_sensitive)
 
-    @dispatch(Cryptarithm)
+    @dispatch(Cryptarithm)  # type: ignore[no-redef]
     def __init__(self, cryptarithm: Cryptarithm):
         super().__init__(cryptarithm.puzzle, cryptarithm.case_sensitive)
 

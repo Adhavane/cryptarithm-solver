@@ -38,7 +38,7 @@ class Enumerate(Solver):
 
     def _evaluated_expr(self, expression: str) -> bool:
         try:
-            return eval(expression)
+            return bool(eval(expression))
         except ZeroDivisionError:
             return False
         except SyntaxError:
