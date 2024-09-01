@@ -1,7 +1,7 @@
 from typing import List, Set
 
-from ..utils import Cryptarithm
-from ._prolog import PrologSolver, Rule
+from ..utils import PrologCryptarithm, PrologRule
+from ._prolog import PrologSolver
 
 
 class GenerateAndTest(PrologSolver):
@@ -26,7 +26,7 @@ class GenerateAndTest(PrologSolver):
         ...     print(solution)
     """
 
-    _rules: List[Rule] = [
+    _rules: List[PrologRule] = [
         "digit(X) :- member(X, [0,1,2,3,4,5,6,7,8,9])",
         "all_diff([])",
         "all_diff([H|T]) :- \+member(H, T), all_diff(T)",
@@ -35,39 +35,39 @@ class GenerateAndTest(PrologSolver):
     def __init__(self):
         super().__init__()
 
-    def _all_digits(self, letters: Set[str]) -> Set[Rule]:
+    def _all_digits(self, letters: Set[str]) -> Set[PrologRule]:
         return {f"digit({letter})" for letter in letters}
 
-    def _all_diff(self, letters: Set[str]) -> Rule:
+    def _all_diff(self, letters: Set[str]) -> PrologRule:
         return f"all_diff([{','.join(letters)}])"
 
-    def _diff(self, letter: str, value: int) -> Rule:
+    def _diff(self, letter: str, value: int) -> PrologRule:
         return f"dif({letter}, {value})"
 
     def _generate(
-        self, cryptarithm: Cryptarithm,
+        self, pl_cryptarithm: PrologCryptarithm,
         allow_zero: bool = True, allow_leading_zero: bool = False
-    ) -> List[Rule]:
+    ) -> List[PrologRule]:
         generated = []
 
-        generated += list(self._all_digits(cryptarithm.letters))
-        generated.append(self._all_diff(cryptarithm.letters))
+        generated += list(self._all_digits(pl_cryptarithm.letters))
+        generated.append(self._all_diff(pl_cryptarithm.letters))
         if not allow_zero:
-            for char in cryptarithm.letters:
+            for char in pl_cryptarithm.letters:
                 generated.append(self._diff(char, 0))
         if not allow_leading_zero:
-            for char in cryptarithm.leading_letters:
+            for char in pl_cryptarithm.leading_letters:
                 generated.append(self._diff(char, 0))
         if allow_leading_zero:
-            for char in cryptarithm.leading_letters:
+            for char in pl_cryptarithm.leading_letters:
                 if f"dif({char}, 0)" in generated:
                     generated.remove(self._diff(char, 0))
 
         return generated
 
-    def _test(self, cryptarithm: Cryptarithm) -> Rule:
-        operands = cryptarithm.words
-        operators = cryptarithm.operators
+    def _test(self, pl_cryptarithm: PrologCryptarithm) -> PrologRule:
+        operands = pl_cryptarithm.words
+        operators = pl_cryptarithm.operators
         rule = ""
 
         for i in range(len(operators)):
@@ -85,9 +85,9 @@ class GenerateAndTest(PrologSolver):
         return rule
 
     def _query_rules(
-        self, cryptarithm: Cryptarithm,
+        self, pl_cryptarithm: PrologCryptarithm,
         allow_zero: bool, allow_leading_zero: bool
-    ) -> List[Rule]:
-        return self._generate(cryptarithm, allow_zero, allow_leading_zero) + [
-            self._test(cryptarithm)
+    ) -> List[PrologRule]:
+        return self._generate(pl_cryptarithm, allow_zero, allow_leading_zero) + [
+            self._test(pl_cryptarithm)
         ]

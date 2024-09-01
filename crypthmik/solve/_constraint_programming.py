@@ -1,8 +1,7 @@
 from typing import List, Set
 
-from ..utils import Cryptarithm
+from ..utils import Cryptarithm, PrologRule
 from ._generate_and_test import GenerateAndTest
-from ._prolog import Rule
 
 
 class ConstraintProgramming(GenerateAndTest):
@@ -26,24 +25,24 @@ class ConstraintProgramming(GenerateAndTest):
         ...     print(solution)
     """
 
-    _rules: List[Rule] = [":- use_module(library(clpfd))"]
+    _rules: List[PrologRule] = [":- use_module(library(clpfd))"]
 
     def __init__(self):
         super().__init__()
 
-    def _all_digits(self, letters: Set[str]) -> Set[Rule]:
+    def _all_digits(self, letters: Set[str]) -> Set[PrologRule]:
         return {f"{letter} in 0..9" for letter in letters}
 
-    def _all_diff(self, letters: Set[str]) -> Rule:
+    def _all_diff(self, letters: Set[str]) -> PrologRule:
         return f"all_different([{','.join(letters)}])"
 
-    def _diff(self, letter: str, value: int) -> Rule:
+    def _diff(self, letter: str, value: int) -> PrologRule:
         return f"{letter} #\\= {value}"
 
-    def _test(self, cryptarithm: Cryptarithm) -> Rule:
+    def _test(self, cryptarithm: Cryptarithm) -> PrologRule:
         return super()._test(cryptarithm).replace("=:=", "#=")
 
-    def _query(self, cryptarithm: Cryptarithm) -> Rule:
+    def _query(self, cryptarithm: Cryptarithm) -> PrologRule:
         return (
             self._query_predicate(cryptarithm)
             + f", label([{','.join(cryptarithm.letters)}])"

@@ -1,6 +1,10 @@
 """This module contains the Cryptarithm class.
 
-A cryptarithm is a type of mathematical puzzle in which the digits are replaced by letters of the alphabet or other symbols. The goal is to find the correct mapping between the letters and the digits to satisfy the given equation.
+A cryptarithm is a type of mathematical puzzle in which the digits are replaced
+by letters of the alphabet or other symbols.
+
+The goal is to find the correct mapping between the letters and the digits to
+satisfy the given equation.
 
 Example:
     The cryptarithm "SEND + MORE = MONEY" can be solved as follows:
@@ -12,10 +16,18 @@ Types:
 
 Classes:
     Cryptarithm: Class for solving cryptarithm puzzles.
+    PrologCryptarithm: Class for solving cryptarithm puzzles using Prolog.
 """
 
 
 from ._cryptarithm import Cryptarithm
-from ._types import Solution
+from ._pl_cryptarithm import PrologCryptarithm
+from ._types import PrologRule, PrologSolution, Solution
 
-__all__ = ["Cryptarithm", "Solution"]
+__all__ = [
+    "Cryptarithm",
+    "PrologCryptarithm",
+    "Solution",
+    "PrologSolution",
+    "PrologRule",
+]

@@ -2,14 +2,12 @@ import multiprocessing as mp
 import tempfile
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Generator, List, TypeAlias
+from typing import Generator, List
 
 from pyswip import Prolog
 
-from ..utils import Cryptarithm
-from ._solver import Solution, Solver
-
-Rule: TypeAlias = str
+from ..utils import Cryptarithm, PrologCryptarithm, PrologRule, Solution
+from ._solver import Solver
 
 
 class PrologSolver(Solver, ABC):
@@ -36,14 +34,14 @@ class PrologSolver(Solver, ABC):
         ...     print(solution)
     """
 
-    _rules: List[Rule] = []
+    _rules: List[PrologRule] = []
 
     def __init__(self):
         super().__init__()
 
-    def _query_predicate(self, cryptarithm: Cryptarithm) -> Rule:
-        operators = cryptarithm.operators
-        operands = cryptarithm.words
+    def _query_predicate(self, pl_cryptarithm: PrologCryptarithm) -> PrologRule:
+        operators = pl_cryptarithm.operators
+        operands = pl_cryptarithm.words
         query = ""
 
         for i in range(len(operands) - 1):
@@ -52,8 +50,8 @@ class PrologSolver(Solver, ABC):
 
         return f"solve([{query}])"
 
-    def _query(self, cryptarithm: Cryptarithm) -> Rule:
-        return self._query_predicate(cryptarithm)
+    def _query(self, pl_cryptarithm: PrologCryptarithm) -> PrologRule:
+        return self._query_predicate(pl_cryptarithm)
 
     def solve(
         self, cryptarithm: Cryptarithm,
@@ -65,13 +63,16 @@ class PrologSolver(Solver, ABC):
         error_channel = mp.Queue()
         error_end = mp.Queue()
 
+        # Create a Prolog cryptarithm
+        pl_cryptarithm = PrologCryptarithm(cryptarithm)
+
         # Start the worker process
         worker = mp.Process(
             target=self._solve_worker,
             args=(
                 result_channel, result_end,
                 error_channel, error_end,
-                cryptarithm, allow_zero, allow_leading_zero,
+                pl_cryptarithm, allow_zero, allow_leading_zero,
             ),
         )
         worker.start()
@@ -80,7 +81,7 @@ class PrologSolver(Solver, ABC):
         while True:
             if result_end.empty() and error_end.empty():
                 if not result_channel.empty():
-                    yield result_channel.get()
+                    yield pl_cryptarithm.convert_solution(result_channel.get())
             else:
                 break
 
@@ -101,8 +102,8 @@ class PrologSolver(Solver, ABC):
         self,
         result_channel: mp.Queue, result_end: mp.Queue,
         error_channel: mp.Queue, error_end: mp.Queue,
-        cryptarithm: Cryptarithm, allow_zero: bool = True,
-        allow_leading_zero: bool = False,
+        pl_cryptarithm: PrologCryptarithm, allow_zero: bool = True,
+        allow_leading_zero: bool = False
     ) -> None:
         try:
             # Generate rules and solve cryptarithm
@@ -114,16 +115,16 @@ class PrologSolver(Solver, ABC):
                     fp.write(rule + ".\n")
                 fp.write("\n")
 
-                fp.write(f"{self._query_predicate(cryptarithm)} :- ")
+                fp.write(f"{self._query_predicate(pl_cryptarithm)} :- ")
                 fp.write(", ".join(map(str, self._query_rules(
-                    cryptarithm, allow_zero, allow_leading_zero))) + ".\n")
+                    pl_cryptarithm, allow_zero, allow_leading_zero))) + ".\n")
                 fp.write("\n")
 
                 fp.close()
 
                 # Consult the temporary file and query the Prolog engine
                 prolog.consult(Path(fp.name).as_posix())  # Convert to Posix path
-                for solution in prolog.query(self._query(cryptarithm)):
+                for solution in prolog.query(self._query(pl_cryptarithm)):
                     result_channel.put(solution)
                 result_end.put(None)
         except Exception as e:
@@ -134,6 +135,7 @@ class PrologSolver(Solver, ABC):
 
     @abstractmethod
     def _query_rules(
-        self, cryptarithm: Cryptarithm, allow_zero: bool, allow_leading_zero: bool
-    ) -> List[Rule]:
+        self, pl_cryptarithm: PrologCryptarithm,
+        allow_zero: bool, allow_leading_zero: bool
+    ) -> List[PrologRule]:
         pass
