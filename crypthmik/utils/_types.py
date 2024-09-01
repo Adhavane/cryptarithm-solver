@@ -7,6 +7,6 @@ Letter: TypeAlias = str
 Word: TypeAlias = List[Letter]
 Solution: TypeAlias = Dict[str, int]
 
-PrologLetter: TypeAlias = List[str]
+PrologLetter: TypeAlias = str
 PrologSolution: TypeAlias = Dict[str, int]
 PrologRule: TypeAlias = str
