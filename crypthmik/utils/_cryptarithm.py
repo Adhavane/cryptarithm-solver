@@ -1,7 +1,7 @@
 import re
 from typing import Dict, List, Set
 
-from ._types import Solution
+from ._types import Letter, Solution, Word
 
 
 class Cryptarithm:
@@ -15,9 +15,9 @@ class Cryptarithm:
         _operators_map (Dict[str, str]): Mapping of operators to symbols.
         puzzle (str): The formatted puzzle.
         case_sensitive (bool): Whether the puzzle is case sensitive.
-        words (List[str]): List of words in the puzzle.
-        letters (Set[str]): Set of unique letters in the puzzle.
-        leading_letters (Set[str]): Set of leading letters in the puzzle.
+        words (List[Word]): List of words in the puzzle.
+        letters (Set[Letter]): Set of unique letters in the puzzle.
+        leading_letters (Set[Letter]): Set of leading letters in the puzzle.
         operators (List[str]): List of operators in the puzzle.
 
     Methods:
@@ -88,15 +88,15 @@ class Cryptarithm:
         return self._case_sensitive
 
     @property
-    def words(self) -> List[str] | List[List[str]]:
+    def words(self) -> List[Word]:
         return re.findall(r"[a-zA-Z]+", self._puzzle)
 
     @property
-    def letters(self) -> Set[str]:
+    def letters(self) -> Set[Letter]:
         return set("".join(self.words))
 
     @property
-    def leading_letters(self) -> Set[str]:
+    def leading_letters(self) -> Set[Letter]:
         return set([word[0] for word in self.words])
 
     @property
