@@ -100,7 +100,7 @@ for solver in [brute_force_solver, generate_and_test_solver, constraint_solver]:
 
 ### 📚🔠 Cryptarithm class
 
-The [`Cryptarithm` class](/cripthmik/utils/_cryptarithm.py) represents a cryptarithm puzzle with an equation in the form of a string.
+The [`Cryptarithm` class](/crypthmik/utils/_cryptarithm.py) represents a cryptarithm puzzle with an equation in the form of a string.
 
 To create a `Cryptarithm` object, you can pass the equation as a string to the constructor:
 
@@ -124,7 +124,7 @@ An `EXPRESSION` consists of two `TERM`s separated by the `=` operator. A `TERM` 
 The `/` operator represents integer division, and the `%` operator represents the modulo operation. For example, `10 / 3 = 3` and `10 % 3 = 1`.
 
 ```python
-from cripthmik import Cryptarithm
+from crypthmik.utils import Cryptarithm
 
 cryptarithm = Cryptarithm("FORTY + TEN + TEN = SIXTY")  # OK
 cryptarithm = Cryptarithm("ABC * DE = HGBC")  # OK
@@ -136,7 +136,7 @@ cryptarithm = Cryptarithm("ODD + ODD == EVEN")  # ERROR: Invalid operator '=='. 
 By default, the `Cryptarithm` class treats the puzzle as case-insensitive, meaning it treats all letters as uppercase. However, it can be configured to be case-sensitive, treating uppercase and lowercase letters as distinct characters.
 
 ```python
-from cripthmik import Cryptarithm
+from crypthmik.utils import Cryptarithm
 
 # Create a Cryptarithm object with a case-insensitive puzzle
 cryptarithm = Cryptarithm("lower + UPPER = case")
@@ -146,9 +146,9 @@ cryptarithm = Cryptarithm("lower + UPPER = case")
 
 The library provides three main solver classes to solve cryptarithms using different algorithms:
 
-1. **Enumerate**: The [`Enumerate`](/cripthmik/solve/_enumerate.py) class implements a brute-force algorithm that systematically explore all possible solutions, ensuring none are missed. This method is simple but can be slow for large puzzles.
-2. **GenerateAndTest**: The [`GenerateAndTest`](/cripthmik/solve/_generate_and_test.py) class uses a generate-and-test approach to iteratively generate potential solutions and test their validity. This method is more efficient than brute-force but still requires a significant amount of computation.
-3. **ConstraintProgramming**: The [`ConstraintProgramming`](/cripthmik/solve/_constraint_programming.py) class leverages constraints to reduce the search space efficiently. This method is the most efficient and can solve complex puzzles quickly.
+1. **Enumerate**: The [`Enumerate`](/crypthmik/solve/_enumerate.py) class implements a brute-force algorithm that systematically explore all possible solutions, ensuring none are missed. This method is simple but can be slow for large puzzles.
+2. **GenerateAndTest**: The [`GenerateAndTest`](/crypthmik/solve/_generate_and_test.py) class uses a generate-and-test approach to iteratively generate potential solutions and test their validity. This method is more efficient than brute-force but still requires a significant amount of computation.
+3. **ConstraintProgramming**: The [`ConstraintProgramming`](/crypthmik/solve/_constraint_programming.py) class leverages constraints to reduce the search space efficiently. This method is the most efficient and can solve complex puzzles quickly.
 
 ## 🤝 Contributing
 
