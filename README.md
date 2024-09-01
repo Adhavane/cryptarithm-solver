@@ -150,6 +150,8 @@ The library provides three main solver classes to solve cryptarithms using diffe
 2. **GenerateAndTest**: The [`GenerateAndTest`](/crypthmik/solve/_generate_and_test.py) class uses a generate-and-test approach to iteratively generate potential solutions and test their validity. This method is more efficient than brute-force but still requires a significant amount of computation.
 3. **ConstraintProgramming**: The [`ConstraintProgramming`](/crypthmik/solve/_constraint_programming.py) class leverages constraints to reduce the search space efficiently. This method is the most efficient and can solve complex puzzles quickly.
 
+To solve a cryptarithm using one of the solvers, you can call the `solve` method on the solver object, passing the `Cryptarithm` object as an argument. The `solve` method returns a generator that yields solutions as dictionaries mapping letters to digits.
+
 ## 🤝 Contributing
 
 This project is a **small**, **fun**, and **educational** endeavor to solve cryptarithm puzzles. It was created to develop my skills in Python and explore different problem-solving techniques.
