@@ -1,6 +1,6 @@
 from typing import List, Set
 
-from ..utils import Cryptarithm, PrologRule
+from ..utils import PrologCryptarithm, PrologRule
 from ._generate_and_test import GenerateAndTest
 
 
@@ -39,11 +39,11 @@ class ConstraintProgramming(GenerateAndTest):
     def _diff(self, letter: str, value: int) -> PrologRule:
         return f"{letter} #\\= {value}"
 
-    def _test(self, cryptarithm: Cryptarithm) -> PrologRule:
-        return super()._test(cryptarithm).replace("=:=", "#=")
+    def _test(self, pl_cryptarithm: PrologCryptarithm) -> PrologRule:
+        return super()._test(pl_cryptarithm).replace("=:=", "#=")
 
-    def _query(self, cryptarithm: Cryptarithm) -> PrologRule:
+    def _query(self, pl_cryptarithm: PrologCryptarithm) -> PrologRule:
         return (
-            self._query_predicate(cryptarithm)
-            + f", label([{','.join(cryptarithm.letters)}])"
+            self._query_predicate(pl_cryptarithm)
+            + f", label([{','.join(pl_cryptarithm.letters)}])"
         )
