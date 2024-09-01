@@ -32,7 +32,7 @@ class Cryptarithm:
         >>> puzzle.puzzle
         'SEND+MORE=MONEY'
         >>> puzzle.words
-        {'SEND', 'MORE', 'MONEY'}
+        [['S', 'E', 'N', 'D'], ['M', 'O', 'R', 'E'], ['M', 'O', 'N', 'E', 'Y']]
         >>> puzzle.letters
         {'S', 'E', 'N', 'D', 'M', 'O', 'R', 'Y'}
         >>> puzzle.operators
@@ -89,11 +89,11 @@ class Cryptarithm:
 
     @property
     def words(self) -> List[Word]:
-        return re.findall(r"[a-zA-Z]+", self._puzzle)
+        return [list(word) for word in re.findall(r"[a-zA-Z]+", self._puzzle)]
 
     @property
     def letters(self) -> Set[Letter]:
-        return set("".join(self.words))
+        return set([letter for word in self.words for letter in word])
 
     @property
     def leading_letters(self) -> Set[Letter]:

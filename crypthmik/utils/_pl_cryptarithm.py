@@ -16,11 +16,8 @@ class PrologCryptarithm(Cryptarithm):
         puzzle (str): The cryptarithm puzzle to solve.
         case_sensitive (bool): Whether the puzzle is case sensitive. Default is True.
 
-        cryptarithm (Cryptarithm): A Cryptarithm object.
-
     Attributes:
         words (List[Word]): List of words in the puzzle in Prolog format.
-        letters (Set[Letter]): Set of letters in the puzzle.
 
     Methods:
         _convert_to_prolog_letter: Convert a letter to Prolog format.
@@ -31,8 +28,6 @@ class PrologCryptarithm(Cryptarithm):
         >>> puzzle = PrologCryptarithm("My + Name = Is", case_sensitive=True)
         >>> puzzle.words
         [['M', 'Y_lowercase'], ['N', 'A', 'M', 'E_lowercase'], ['I', 'S_lowercase']]
-        >>> puzzle.letters
-        {'Y_lowercase', 'M', 'E_lowercase', 'N', 'A', 'I', 'S_lowercase'}
     """
 
     _lowercase_suffix = "_lowercase"
@@ -41,7 +36,7 @@ class PrologCryptarithm(Cryptarithm):
     def __init__(self, puzzle: str, case_sensitive: bool = True):
         super().__init__(puzzle, case_sensitive)
 
-    @dispatch(Cryptarithm)
+    @dispatch(Cryptarithm)  # type: ignore[no-redef]
     def __init__(self, cryptarithm: Cryptarithm):
         super().__init__(cryptarithm.puzzle, cryptarithm.case_sensitive)
 
@@ -51,14 +46,10 @@ class PrologCryptarithm(Cryptarithm):
         # the lowercase letters.
         # This is necessary because Prolog is case-sensitive, so we need to
         # distinguish between uppercase and lowercase letters.
-        return list(
-            map(
-                lambda word: list(
-                    map(lambda letter: self._convert_to_prolog_letter(letter), word)
-                ),
-                super().words,
-            )
-        )
+        return [
+            [self._convert_to_prolog_letter(letter) for letter in word]
+            for word in super().words
+        ]
 
     def _convert_to_prolog_letter(self, letter: Letter) -> PrologLetter:
         return letter.upper() + self._lowercase_suffix if letter.islower() else letter
@@ -69,10 +60,6 @@ class PrologCryptarithm(Cryptarithm):
             if pl_letter.endswith(self._lowercase_suffix)
             else pl_letter
         )
-
-    @property
-    def letters(self) -> Set[str]:
-        return set([letter for word in self.words for letter in word])
 
     def convert_solution(self, pl_solution: PrologSolution) -> Solution:
         return {

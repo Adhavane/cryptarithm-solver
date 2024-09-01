@@ -1,2 +1,5 @@
+multipledispatch==1.0.0
 pyswip==0.2.10
+mypy==1.11.2
 tqdm==4.66.4
+types-tqdm==4.66.0.20240417
