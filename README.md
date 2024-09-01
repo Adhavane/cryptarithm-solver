@@ -40,7 +40,7 @@ The repository is organized as follows:
 ├── crypthmik/
 │   ├── solve
 │   │   ├── __init__.py
-│   │   ├── solver.py   
+│   │   ├── solver.py
 │   │   └── # other solver modules
 │   └── utils
 │       ├── __init__.py
@@ -138,8 +138,8 @@ By default, the `Cryptarithm` class treats the puzzle as case-insensitive, meani
 ```python
 from crypthmik.utils import Cryptarithm
 
-# Create a Cryptarithm object with a case-insensitive puzzle
-cryptarithm = Cryptarithm("lower + UPPER = case")
+# Create a Cryptarithm object with a case-sensitive puzzle
+cryptarithm = Cryptarithm("lower + UPPER = case", case_sensitive=True)
 ```
 
 ### 📚💡 Solution methods
