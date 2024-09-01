@@ -58,10 +58,10 @@ class PrologSolver(Solver, ABC):
         allow_zero: bool = True, allow_leading_zero: bool = False
     ) -> Generator[Solution, None, None]:
         # Create a new process with a queue
-        result_channel = mp.Queue()
-        result_end = mp.Queue()
-        error_channel = mp.Queue()
-        error_end = mp.Queue()
+        result_channel: mp.Queue = mp.Queue()
+        result_end: mp.Queue = mp.Queue()
+        error_channel: mp.Queue = mp.Queue()
+        error_end: mp.Queue = mp.Queue()
 
         # Create a Prolog cryptarithm
         pl_cryptarithm = PrologCryptarithm(cryptarithm)

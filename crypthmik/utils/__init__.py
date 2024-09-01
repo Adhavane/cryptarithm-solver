@@ -12,7 +12,12 @@ Example:
     Therefore, the solution is "9567 + 1085 = 10652".
 
 Types:
+    Letter: Type alias for a letter in a cryptarithm.
+    Word: Type alias for a word in a cryptarithm.
     Solution: Type alias for a dictionary containing the solution to a cryptarithm.
+    PrologLetter: Type alias for a Prolog letter in a cryptarithm.
+    PrologRule: Type alias for a Prolog rule in a cryptarithm.
+    PrologSolution: Type alias for a Prolog solution in a cryptarithm.
 
 Classes:
     Cryptarithm: Class for solving cryptarithm puzzles.
@@ -22,12 +27,16 @@ Classes:
 
 from ._cryptarithm import Cryptarithm
 from ._pl_cryptarithm import PrologCryptarithm
-from ._types import PrologRule, PrologSolution, Solution
+from ._types import (Letter, PrologLetter, PrologRule, PrologSolution,
+                     Solution, Word)
 
 __all__ = [
     "Cryptarithm",
     "PrologCryptarithm",
+    "Letter",
+    "Word",
     "Solution",
+    "PrologLetter",
     "PrologSolution",
     "PrologRule",
 ]

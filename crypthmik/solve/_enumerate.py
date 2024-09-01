@@ -1,10 +1,10 @@
 import itertools
 import re
-from typing import Generator
+from typing import Generator, Set
 
 from tqdm import tqdm
 
-from ..utils import Cryptarithm, Solution
+from ..utils import Cryptarithm, Letter, Solution
 from ._solver import Solution, Solver
 
 
@@ -31,14 +31,14 @@ class Enumerate(Solver):
     def __init__(self):
         super().__init__()
 
-    def _generate_perms(self, letters: str) -> Generator[Solution, None, None]:
+    def _generate_perms(self, letters: Set[Letter]) -> Generator[Solution, None, None]:
         for perm in itertools.permutations(range(10), len(letters)):
             sol = dict(zip(letters, perm))
             yield sol
 
     def _evaluated_expr(self, expression: str) -> bool:
         try:
-            return eval(expression)
+            return bool(eval(expression))
         except ZeroDivisionError:
             return False
         except SyntaxError:
